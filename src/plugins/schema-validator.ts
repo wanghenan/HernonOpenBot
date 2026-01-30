@@ -1,7 +1,7 @@
-import { z, type ZodTypeAny, type ZodError } from "zod";
+import { z, type ZodTypeAny, ZodError } from "zod";
 
 type CachedValidator = {
-  parse: ZodTypeAny["parse"];
+  parse: (value: unknown) => unknown;
   schema: Record<string, unknown>;
 };
 
@@ -23,7 +23,7 @@ export function validateJsonSchemaValue(params: {
 }): { ok: true } | { ok: false; errors: string[] } {
   let cached = schemaCache.get(params.cacheKey);
   if (!cached || cached.schema !== params.schema) {
-    const zodSchema = z.record(z.unknown()).passthrough();
+    const zodSchema = z.record(z.string(), z.unknown());
     cached = { parse: zodSchema.parse, schema: params.schema };
     schemaCache.set(params.cacheKey, cached);
   }
