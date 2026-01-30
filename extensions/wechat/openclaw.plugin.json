@@ -1,0 +1,17 @@
+{
+  "id": "wechat",
+  "name": "WeChat",
+  "description": "WeChat Official Account channel plugin (微信公众平台)",
+  "channels": ["wechat"],
+  "keywords": ["wechat", "weixin", "wechat-official-account", "weixin-oa"],
+  "categories": ["channels"],
+  "version": "1.0.0",
+  "author": "OpenClaw Contributors",
+  "license": "MIT",
+  "repository": "https://github.com/openclaw/openclaw",
+  "bugs": "https://github.com/openclaw/openclaw/issues",
+  "homepage": "https://github.com/openclaw/openclaw",
+  "openclaw": {
+    "version": ">=2026.1.0"
+  }
+}

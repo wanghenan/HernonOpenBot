@@ -16,16 +16,16 @@ channels/
 
 ## 内置通道
 
-| 通道 | 实现文件 | 状态 |
-|------|----------|------|
+| 通道     | 实现文件       | 状态    |
+| -------- | -------------- | ------- |
 | Telegram | `../telegram/` | ✅ 稳定 |
-| Discord | `../discord/` | ✅ 稳定 |
+| Discord  | `../discord/`  | ✅ 稳定 |
 | WhatsApp | `../whatsapp/` | ✅ 稳定 |
-| Slack | `../slack/` | ✅ 稳定 |
-| Signal | `../signal/` | ✅ 稳定 |
+| Slack    | `../slack/`    | ✅ 稳定 |
+| Signal   | `../signal/`   | ✅ 稳定 |
 | iMessage | `../imessage/` | ✅ 稳定 |
-| Line | `../line/` | ⏸️ 可选 |
-| WebChat | `../web/` | ✅ 稳定 |
+| Line     | `../line/`     | ⏸️ 可选 |
+| WebChat  | `../web/`      | ✅ 稳定 |
 
 ## 通道接口
 
