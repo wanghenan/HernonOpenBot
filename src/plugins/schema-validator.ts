@@ -1,23 +1,17 @@
-import AjvPkg, { type ErrorObject, type ValidateFunction } from "ajv";
-
-const ajv = new (AjvPkg as unknown as new (opts?: object) => import("ajv").default)({
-  allErrors: true,
-  strict: false,
-  removeAdditional: false,
-});
+import { z, type ZodTypeAny, type ZodError } from "zod";
 
 type CachedValidator = {
-  validate: ValidateFunction;
+  parse: ZodTypeAny["parse"];
   schema: Record<string, unknown>;
 };
 
 const schemaCache = new Map<string, CachedValidator>();
 
-function formatAjvErrors(errors: ErrorObject[] | null | undefined): string[] {
-  if (!errors || errors.length === 0) return ["invalid config"];
-  return errors.map((error) => {
-    const path = error.instancePath?.replace(/^\//, "").replace(/\//g, ".") || "<root>";
-    const message = error.message ?? "invalid";
+function formatZodErrors(error: ZodError): string[] {
+  if (!error || error.issues.length === 0) return ["invalid config"];
+  return error.issues.map((issue) => {
+    const path = issue.path.length > 0 ? issue.path.join(".") : "<root>";
+    const message = issue.message;
     return `${path}: ${message}`;
   });
 }
@@ -29,12 +23,18 @@ export function validateJsonSchemaValue(params: {
 }): { ok: true } | { ok: false; errors: string[] } {
   let cached = schemaCache.get(params.cacheKey);
   if (!cached || cached.schema !== params.schema) {
-    const validate = ajv.compile(params.schema) as ValidateFunction;
-    cached = { validate, schema: params.schema };
+    const zodSchema = z.record(z.unknown()).passthrough();
+    cached = { parse: zodSchema.parse, schema: params.schema };
     schemaCache.set(params.cacheKey, cached);
   }
 
-  const ok = cached.validate(params.value);
-  if (ok) return { ok: true };
-  return { ok: false, errors: formatAjvErrors(cached.validate.errors) };
+  try {
+    cached.parse(params.value);
+    return { ok: true };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { ok: false, errors: formatZodErrors(error) };
+    }
+    return { ok: false, errors: ["invalid config"] };
+  }
 }

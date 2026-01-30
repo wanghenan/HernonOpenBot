@@ -77,6 +77,86 @@ pnpm install --no-optional
 
 ---
 
+## 🔒 验证库统一方案
+
+本项目采用 **Zod 作为统一验证库**，确保类型安全和验证逻辑的一致性。
+
+### 验证库使用策略
+
+| 层级 | 验证库 | 原因 |
+|------|--------|------|
+| **配置层** | Zod | 声明式 schema，类型推导，自动错误消息 |
+| **插件层** | Zod | 与配置层一致，统一验证体验 |
+| **协议层** | TypeBox + Ajv | Gateway Protocol 标准要求 JSON Schema |
+
+### Zod 优势
+
+```typescript
+// 声明式定义，自动类型推导
+const configSchema = z.object({
+  agent: z.object({
+    model: z.string().default("anthropic/claude-opus-4-5"),
+    sandbox: z.object({
+      mode: z.enum(["non-main", "all"]).default("non-main"),
+    }).default({}),
+  }).default({}),
+});
+
+// 类型自动推导，无需手动维护
+type Config = z.infer<typeof configSchema>;
+
+// 友好的错误消息
+const result = configSchema.safeParse(userConfig);
+if (!result.success) {
+  console.log(result.error.issues);
+  // 输出: [
+  //   { path: ["agent", "model"], message: "Expected string, received number" }
+  // ]
+}
+```
+
+### 配置 schema 文件
+
+| 文件 | 用途 |
+|------|------|
+| `src/config/zod-schema.core.ts` | 核心配置 |
+| `src/config/zod-schema.agents.ts` | Agent 配置 |
+| `src/config/zod-schema.channels.ts` | 通道配置 |
+| `src/config/zod-schema.providers.ts` | 模型提供商 |
+| `src/config/zod-schema.hooks.ts` | Hooks 配置 |
+| `src/config/zod-schema.session.ts` | 会话配置 |
+| `src/config/zod-schema.approvals.ts` | 审批配置 |
+| `src/plugins/config-schema.ts` | 插件配置 |
+
+### 迁移进度
+
+- ✅ 配置层（16 个文件）→ 全部使用 Zod
+- ✅ 插件层 → 统一使用 Zod
+- ⏸️ 协议层 → 保留 Ajv（JSON Schema 标准要求）
+
+### 推荐实践
+
+```bash
+# 添加新配置项时
+1. 在对应 zod-schema.ts 中添加定义
+2. 使用 safeParse 验证用户输入
+3. 提供友好的错误提示
+
+# 示例：添加新通道配置
+const channelSchema = z.object({
+  enabled: z.boolean().default(true),
+  timeout: z.number().positive().default(30000),
+});
+
+# 验证并获取类型安全的配置
+const parsed = channelSchema.safeParse(rawConfig);
+if (parsed.success) {
+  const config = parsed.data; // 类型推断为 { enabled: boolean; timeout: number }
+}
+```
+
+---
+
 ## 🚀 快速开始
 
 ### 环境要求
