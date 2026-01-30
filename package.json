@@ -1,8 +1,8 @@
 {
-  "name": "openclaw",
+  "name": "hernonopenbot",
   "version": "2026.1.29",
-  "description": "WhatsApp gateway CLI (Baileys web) with Pi RPC agent",
-  "type": "module",
+  "description": "Personal AI Assistant - Forked from OpenClaw",
+  "private": true,
   "main": "dist/index.js",
   "exports": {
     ".": "./dist/index.js",
