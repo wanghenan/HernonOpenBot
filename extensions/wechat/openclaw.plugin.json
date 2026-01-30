@@ -13,5 +13,32 @@
   "homepage": "https://github.com/openclaw/openclaw",
   "openclaw": {
     "version": ">=2026.1.0"
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": { "type": "boolean" },
+      "appId": { "type": "string" },
+      "appSecret": { "type": "string" },
+      "token": { "type": "string" },
+      "encodingAESKey": { "type": "string" },
+      "msgDataFormat": {
+        "type": "string",
+        "enum": ["plaintext", "compatible", "secure"]
+      },
+      "webhookPath": { "type": "string" },
+      "webhookUrl": { "type": "string" },
+      "webhookSecret": { "type": "string" },
+      "proxy": { "type": "string" },
+      "allowFrom": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "dmPolicy": {
+        "type": "string",
+        "enum": ["pairing", "open", "closed"]
+      }
+    }
   }
 }

@@ -375,6 +375,13 @@ pnpm test
   - 支持 additionalProperties、required、nullable 等高级特性
   - 现在可以正确验证插件配置类型
 
+#### 测试修复
+- ✅ **修复15个测试文件失败问题** (44个测试)
+  - `onboard-non-interactive.token.test.ts` - 插件manifest缺少configSchema
+  - `security/fix.test.ts` - 4个安全修复测试
+  - 其他扩展测试 (lobster等)
+  - **结果: 33个测试文件，192个测试全部通过**
+
 #### 质量改进
 - ✅ 代码检查通过 (`pnpm lint`)
 - ✅ 代码格式化完成 (`pnpm format:fix`)
